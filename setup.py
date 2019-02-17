@@ -6,7 +6,6 @@ setup(
     author='Nikola Trubitsyn',
     author_email='nikola.trubitsyn@gmail.com',
     url='https://github.com/trubitsyn/bmstu-schedule-diff',
-    license='AGPLv3+',
     python_requires='>=3.6',
     long_description_content_type='text/markdown',
     description='Display BMSTU schedule diff',
