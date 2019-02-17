@@ -5,7 +5,18 @@ Display BMSTU schedule diff.
 `pip3 install bmstu-schedule-diff`
 
 ## Usage
-`bmstu-schedule-diff ИУ7-45 ИУ6-64`
+```
+bmstu-schedule-diff [GROUP]...
+```
+```
+$ bmstu-schedule-diff ИУ7-45 ЮР-24
+Downloading ИУ7-45 schedule...
+Downloading ЮР-24 schedule...
+Looking for lessons on nearby floors...
+
+Friday:
+(13:50-15:25 Объектно-ориентированное программирование 228л, 13:50-15:25 Математика 255л)
+```
 
 ## LICENSE
 ```
