@@ -15,10 +15,20 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import argparse
+import re
 
 from bmstu_schedule_diff import weekday_schedule, FLAG_NEAR_FLOOR, FLAG_SAME_START_TIME
 from .parser import get_schedule
 from .patch import patch_bmstu_schedule
+
+weekday_mapping = {
+    0: 'Понедельник',
+    1: 'Вторник',
+    2: 'Среда',
+    3: 'Четверг',
+    4: 'Пятница',
+    5: 'Суббота'
+}
 
 
 def main():
@@ -26,7 +36,7 @@ def main():
     groups = args['groups']
     lessons_per_group = {}
     for group in groups:
-        print("Fetching schedule for", group)
+        print(f"Скачиваю расписание {group}...")
         lessons = get_schedule(group)
         lessons_per_group[group] = lessons
 
@@ -34,19 +44,27 @@ def main():
     for group in lessons_per_group.keys():
         schedules_for_diff.append(weekday_schedule(group, lessons_per_group[group]))
 
+    flags = FLAG_SAME_START_TIME | FLAG_NEAR_FLOOR
+    print("Ищу пары на близких этажах...\n")
+
     initial = schedules_for_diff[0]
     for schedule in schedules_for_diff[1:]:
-        initial = initial.diff(schedule, FLAG_SAME_START_TIME | FLAG_NEAR_FLOOR)
+        initial = initial.diff(schedule, flags)
 
-    for key in initial.keys():
-        print("Weekday:", key)
-        for pair in initial[key]:
-            print("(", end="")
-            print(pair[0].start_time, pair[0].end_time, pair[0].auditorium, end="")
-            print(", ", end="")
-            print(pair[1].start_time, pair[1].end_time, pair[1].auditorium, end="")
-            print(")", end="")
-            print()
+    for weekday in initial.keys():
+        if not initial[weekday]:
+            continue
+        print(f"{weekday_mapping[weekday]}:")
+        for pair in initial[weekday]:
+            print(f"({pretty_print_subject(pair[0])}, {pretty_print_subject(pair[1])})")
+        print()
+
+
+def pretty_print_subject(subject):
+    def format_time(time):
+        return ":".join(re.findall('..', time)[:-1])
+
+    return f"{format_time(subject.start_time)}-{format_time(subject.end_time)} {subject.name} {subject.auditorium}"
 
 
 def argparser():
