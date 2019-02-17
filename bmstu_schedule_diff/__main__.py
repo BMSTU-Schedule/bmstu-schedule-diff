@@ -42,6 +42,11 @@ def main():
     for group in groups:
         print(f"Downloading {group} schedule...")
         lessons = get_schedule(group)
+
+        if not lessons:
+            print(f"Failed to download schedule for {group}")
+            return
+
         lessons_per_group[group] = lessons
 
     schedules_for_diff = []
