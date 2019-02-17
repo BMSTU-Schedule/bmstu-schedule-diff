@@ -22,12 +22,12 @@ from .parser import get_schedule
 from .patch import patch_bmstu_schedule
 
 weekday_mapping = {
-    0: 'Понедельник',
-    1: 'Вторник',
-    2: 'Среда',
-    3: 'Четверг',
-    4: 'Пятница',
-    5: 'Суббота'
+    0: 'Monday',
+    1: 'Tuesday',
+    2: 'Wednesday',
+    3: 'Thursday',
+    4: 'Friday',
+    5: 'Saturday'
 }
 
 
@@ -36,7 +36,7 @@ def main():
     groups = args['groups']
     lessons_per_group = {}
     for group in groups:
-        print(f"Скачиваю расписание {group}...")
+        print(f"Downloading {group} schedule...")
         lessons = get_schedule(group)
         lessons_per_group[group] = lessons
 
@@ -45,14 +45,14 @@ def main():
         schedules_for_diff.append(weekday_schedule(group, lessons_per_group[group]))
 
     flags = FLAG_SAME_START_TIME | FLAG_NEAR_FLOOR
-    print("Ищу пары на близких этажах...\n")
+    print("Looking for lessons on nearby floors...\n")
 
     initial = schedules_for_diff[0]
     for schedule in schedules_for_diff[1:]:
         initial = initial.diff(schedule, flags)
 
     if all(not initial[key] for key in initial.keys()):
-        print("Ничего не найдено.")
+        print("Nothing found.")
         return
 
     for weekday in initial.keys():
@@ -80,7 +80,7 @@ def argparser():
         'groups',
         type=str,
         nargs='*',
-        help='Group identifier'
+        help='Group identifiers'
     )
     return parser
 
