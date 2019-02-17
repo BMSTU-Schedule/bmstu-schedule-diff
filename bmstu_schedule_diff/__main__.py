@@ -51,6 +51,10 @@ def main():
     for schedule in schedules_for_diff[1:]:
         initial = initial.diff(schedule, flags)
 
+    if all(not initial[key] for key in initial.keys()):
+        print("Ничего не найдено.")
+        return
+
     for weekday in initial.keys():
         if not initial[weekday]:
             continue
