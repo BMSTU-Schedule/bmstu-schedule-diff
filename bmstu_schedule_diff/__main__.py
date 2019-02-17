@@ -17,8 +17,8 @@
 import argparse
 
 from bmstu_schedule_diff import weekday_schedule, FLAG_NEAR_FLOOR, FLAG_SAME_START_TIME
-from parser import get_schedule
-from patch import patch_bmstu_schedule
+from .parser import get_schedule
+from .patch import patch_bmstu_schedule
 
 
 def main():
