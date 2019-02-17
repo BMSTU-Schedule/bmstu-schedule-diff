@@ -34,8 +34,8 @@ weekday_mapping = {
 def main():
     args = vars(argparser().parse_args())
     groups = set(map(lambda group: group.upper(), args['groups']))
-    if len(groups) < 2:
-        print("Please specify at least two different groups.")
+    if len(groups) != 2:
+        print("Please specify two different groups.")
         return
 
     lessons_per_group = {}

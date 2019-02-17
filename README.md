@@ -6,7 +6,7 @@ Display BMSTU schedule diff.
 
 ## Usage
 ```
-bmstu-schedule-diff [GROUP]...
+bmstu-schedule-diff [GROUP1] [GROUP2]
 ```
 ```
 $ bmstu-schedule-diff ИУ7-45 ЮР-24
