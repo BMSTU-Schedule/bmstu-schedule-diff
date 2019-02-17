@@ -32,6 +32,7 @@ weekday_mapping = {
 
 
 def main():
+    patch_bmstu_schedule()
     args = vars(argparser().parse_args())
     groups = set(map(lambda group: group.upper(), args['groups']))
     if len(groups) != 2:
@@ -95,5 +96,4 @@ def argparser():
 
 
 if __name__ == '__main__':
-    patch_bmstu_schedule()
     main()
