@@ -45,8 +45,8 @@ def building(subject: Subject) -> Building:
         return Building.MAIN_SOUTH
     if auditorium[-2:] == 'мт':
         return Building.MT
-    if auditorium == 'Каф':
+    if auditorium == 'каф':
         return Building.KAF
-    if auditorium == 'Лекторий':
+    if auditorium == 'лекторий':
         return Building.LEKTORIUM
     return Building.UNKNOWN
