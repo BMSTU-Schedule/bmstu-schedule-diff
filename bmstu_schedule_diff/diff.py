@@ -84,7 +84,7 @@ class Diff(object):
     def same_floor_auditorium(subject1, subject2) -> bool:
         if not (subject1.auditorium and subject2.auditorium):
             return False
-        if digits(subject1.auditorium)[0] == digits(subject2.auditorium)[0]:
+        if floors_difference(digits(subject1.auditorium), digits(subject2.auditorium)) == 0:
             return True
         return False
 
@@ -92,10 +92,14 @@ class Diff(object):
     def nearby_floor_auditorium(subject1, subject2) -> bool:
         if not (subject1.auditorium and subject2.auditorium):
             return False
-        if abs(int(digits(subject1.auditorium)[0]) - int(digits(subject2.auditorium)[0])) <= 1:
+        if floors_difference(digits(subject1.auditorium), digits(subject2.auditorium)) <= 1:
             return True
         return False
 
 
 def digits(s: str) -> str:
     return re.sub("\D", "", s)
+
+
+def floors_difference(aud1: str, aud2: str):
+    return abs((int(aud1) // 100) - (int(aud2) // 100))
