@@ -29,7 +29,7 @@ class Flag(IntFlag):
     SAME_START_TIME = 1 << 2
     SAME_END_TIME = 1 << 3
     SAME_FLOOR = 1 << 4
-    NEAR_FLOOR = 1 << 5
+    NEARBY_FLOOR = 1 << 5
 
 
 class Diff(object):
@@ -44,23 +44,23 @@ class Diff(object):
             for subject2 in self.second:
                 if subject1.weeks_interval == subject2.weeks_interval:
                     if flags & Flag.SAME_BUILDING:
-                        if not Diff.has_same_building(subject1, subject2):
+                        if not Diff.same_building(subject1, subject2):
                             continue
 
                     if flags & Flag.SAME_START_TIME:
-                        if not Diff.has_same_start_time(subject1, subject2):
+                        if not Diff.same_start_time(subject1, subject2):
                             continue
 
                     if flags & Flag.SAME_END_TIME:
-                        if not Diff.has_same_end_time(subject1, subject2):
+                        if not Diff.same_end_time(subject1, subject2):
                             continue
 
                     if flags & Flag.SAME_FLOOR:
-                        if not Diff.has_same_floor_auditorium(subject1, subject2):
+                        if not Diff.same_floor_auditorium(subject1, subject2):
                             continue
 
-                    if flags & Flag.NEAR_FLOOR:
-                        if not Diff.has_same_floor_auditorium(subject1, subject2):
+                    if flags & Flag.NEARBY_FLOOR:
+                        if not Diff.nearby_floor_auditorium(subject1, subject2):
                             continue
 
                     matching.append((subject1, subject2))
@@ -68,20 +68,20 @@ class Diff(object):
         return matching
 
     @staticmethod
-    def has_same_building(subject1, subject2):
+    def same_building(subject1, subject2):
         b1, b2 = building(subject1), building(subject2)
         return b1 == b2 and b1 != Building.UKNOWN
 
     @staticmethod
-    def has_same_start_time(subject1, subject2):
+    def same_start_time(subject1, subject2):
         return subject1.start_time == subject2.start_time
 
     @staticmethod
-    def has_same_end_time(subject1, subject2):
+    def same_end_time(subject1, subject2):
         return subject1.end_time == subject2.end_time
 
     @staticmethod
-    def has_same_floor_auditorium(subject1, subject2) -> bool:
+    def same_floor_auditorium(subject1, subject2) -> bool:
         if not (subject1.auditorium and subject2.auditorium):
             return False
         if digits(subject1.auditorium)[0] == digits(subject2.auditorium)[0]:
@@ -89,7 +89,7 @@ class Diff(object):
         return False
 
     @staticmethod
-    def has_near_floor_auditorium(subject1, subject2) -> bool:
+    def nearby_floor_auditorium(subject1, subject2) -> bool:
         if not (subject1.auditorium and subject2.auditorium):
             return False
         if abs(int(digits(subject1.auditorium)[0]) - int(digits(subject2.auditorium)[0])) <= 1:

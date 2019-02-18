@@ -55,7 +55,7 @@ def main():
     for group in lessons_per_group.keys():
         schedules_for_diff.append(weekday_schedule(group, lessons_per_group[group]))
 
-    flags = Flag.SAME_START_TIME | Flag.NEAR_FLOOR
+    flags = Flag.SAME_START_TIME | Flag.NEARBY_FLOOR
     print("Looking for lessons on nearby floors...\n")
 
     initial = schedules_for_diff[0]
