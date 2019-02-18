@@ -34,6 +34,9 @@ class Building(Enum):
 
 
 def building(subject: Subject, differentiate_main_sides: bool) -> Building:
+    if not subject.auditorium:
+        return Building.UNKNOWN
+
     auditorium = subject.auditorium.lower()
     if auditorium.isdigit():
         if differentiate_main_sides:
