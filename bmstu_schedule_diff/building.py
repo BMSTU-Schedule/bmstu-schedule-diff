@@ -33,10 +33,12 @@ class Building(Enum):
     UNKNOWN = auto()
 
 
-def building(subject: Subject) -> Building:
+def building(subject: Subject, differentiate_main_sides: bool) -> Building:
     auditorium = subject.auditorium.lower()
     if auditorium.isdigit():
-        return Building.MAIN_NORTH
+        if differentiate_main_sides:
+            return Building.MAIN_NORTH
+        return Building.MAIN
     if auditorium[-1:] == 'л':
         return Building.ULK
     if auditorium[-1:] == 'м':
@@ -44,7 +46,9 @@ def building(subject: Subject) -> Building:
     if auditorium[-1:] == 'э':
         return Building.E
     if auditorium[-1:] == 'ю':
-        return Building.MAIN_SOUTH
+        if differentiate_main_sides:
+            return Building.MAIN_SOUTH
+        return Building.MAIN
     if auditorium[-2:] == 'мт':
         return Building.MT
     if auditorium == 'каф':

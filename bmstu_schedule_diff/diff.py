@@ -26,10 +26,11 @@ from bmstu_schedule_diff import building, Building
 @unique
 class Flag(IntFlag):
     SAME_BUILDING = 1 << 1
-    SAME_START_TIME = 1 << 2
-    SAME_END_TIME = 1 << 3
-    SAME_FLOOR = 1 << 4
-    NEARBY_FLOOR = 1 << 5
+    SAME_BUILDING_SIDE = 1 << 2
+    SAME_START_TIME = 1 << 3
+    SAME_END_TIME = 1 << 4
+    SAME_FLOOR = 1 << 5
+    NEARBY_FLOOR = 1 << 6
 
 
 class Diff(object):
@@ -44,7 +45,8 @@ class Diff(object):
             for subject2 in self.second:
                 if subject1.weeks_interval == subject2.weeks_interval:
                     if flags & Flag.SAME_BUILDING:
-                        if not Diff.same_building(subject1, subject2):
+                        differentiate_main_sides = flags & Flag.SAME_BUILDING_SIDE
+                        if not Diff.same_building(subject1, subject2, bool(differentiate_main_sides)):
                             continue
 
                     if flags & Flag.SAME_START_TIME:
@@ -68,9 +70,11 @@ class Diff(object):
         return matching
 
     @staticmethod
-    def same_building(subject1, subject2):
-        b1, b2 = building(subject1), building(subject2)
-        return b1 == b2 and b1 != Building.UKNOWN
+    def same_building(subject1, subject2, differentiate_main_sides: bool):
+        if not (valid_auditorium(subject1.auditorium) and valid_auditorium(subject2.auditorium)):
+            return False
+        b1, b2 = building(subject1, differentiate_main_sides), building(subject2, differentiate_main_sides)
+        return b1 == b2 and b1 != Building.UNKNOWN
 
     @staticmethod
     def same_start_time(subject1, subject2):
@@ -105,7 +109,7 @@ def valid_auditorium(auditorium: str):
     if len(s) == 0:
         return False
 
-    blacklist = ('каф', 'уивц', 'утп', '/')
+    blacklist = ('каф', 'уивц', 'утп', 'лекторий', '/', ',')
     for item in blacklist:
         if item in s:
             return False
