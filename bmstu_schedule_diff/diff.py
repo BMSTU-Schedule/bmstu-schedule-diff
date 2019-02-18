@@ -82,7 +82,7 @@ class Diff(object):
 
     @staticmethod
     def same_floor_auditorium(subject1, subject2) -> bool:
-        if not (subject1.auditorium and subject2.auditorium):
+        if not (valid_auditorium(subject1.auditorium) and valid_auditorium(subject2.auditorium)):
             return False
         if floors_difference(digits(subject1.auditorium), digits(subject2.auditorium)) == 0:
             return True
@@ -90,11 +90,27 @@ class Diff(object):
 
     @staticmethod
     def nearby_floor_auditorium(subject1, subject2) -> bool:
-        if not (subject1.auditorium and subject2.auditorium):
+        if not (valid_auditorium(subject1.auditorium) and valid_auditorium(subject2.auditorium)):
             return False
         if floors_difference(digits(subject1.auditorium), digits(subject2.auditorium)) <= 1:
             return True
         return False
+
+
+def valid_auditorium(auditorium: str):
+    if not auditorium:
+        return False
+
+    s = auditorium.lower()
+    if len(s) == 0:
+        return False
+
+    blacklist = ('каф', 'уивц', 'утп', '/')
+    for item in blacklist:
+        if item in s:
+            return False
+
+    return True
 
 
 def digits(s: str) -> str:
