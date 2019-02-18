@@ -17,7 +17,8 @@
 import argparse
 import re
 
-from bmstu_schedule_diff import weekday_schedule, FLAG_NEAR_FLOOR, FLAG_SAME_START_TIME
+from .diff import Flag
+from .schedule import weekday_schedule
 from .parser import get_schedule
 from .patch import patch_bmstu_schedule
 
@@ -54,7 +55,7 @@ def main():
     for group in lessons_per_group.keys():
         schedules_for_diff.append(weekday_schedule(group, lessons_per_group[group]))
 
-    flags = FLAG_SAME_START_TIME | FLAG_NEAR_FLOOR
+    flags = Flag.SAME_START_TIME | Flag.NEAR_FLOOR
     print("Looking for lessons on nearby floors...\n")
 
     initial = schedules_for_diff[0]

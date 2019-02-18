@@ -14,50 +14,22 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from typing import List, Dict, Tuple
+import re
+from enum import unique, IntFlag
+from typing import List, Tuple
 
-from bmstu_schedule import Lesson, Subject
+from bmstu_schedule import Subject
 
-FLAG_SAME_START_TIME = 1 << 2
-FLAG_SAME_END_TIME = 1 << 3
-FLAG_SAME_FLOOR = 1 << 4
-FLAG_NEAR_FLOOR = 1 << 5
-
-
-class Schedule(object):
-
-    def __init__(self, group: str, subjects_by_weekday: Dict[int, List[Subject]]):
-        self.group = group
-        self.subjects_by_weekday = subjects_by_weekday
-
-    def diff(self, schedule, flags: int) -> Dict[int, List[Tuple[Subject, Subject]]]:
-        weekdays = {}
-
-        for weekday in range(0, 6):
-            first = self.subjects_by_weekday[weekday]
-            second = schedule.subjects_by_weekday[weekday]
-            diff = Diff(first, second)
-            diff_for_weekday = diff.diff(flags)
-            weekdays[weekday] = diff_for_weekday
-
-        return weekdays
+from bmstu_schedule_diff import building, Building
 
 
-def weekday_schedule(group: str, lessons: List[Lesson]) -> Schedule:
-    filtered = {}
-    for i in range(0, 6):
-        filtered[i] = []
-
-    for lesson in lessons:
-        subjects = lesson.subjects
-        for subject in subjects:
-            subject.start_time = lesson.start_time
-            subject.end_time = lesson.end_time
-        for i in range(0, 6):
-            n = filter(lambda x: x.subject_day_index == i, subjects)
-            filtered[i].extend(n)
-
-    return Schedule(group, filtered)
+@unique
+class Flag(IntFlag):
+    SAME_BUILDING = 1 << 1
+    SAME_START_TIME = 1 << 2
+    SAME_END_TIME = 1 << 3
+    SAME_FLOOR = 1 << 4
+    NEAR_FLOOR = 1 << 5
 
 
 class Diff(object):
@@ -71,25 +43,34 @@ class Diff(object):
         for subject1 in self.first:
             for subject2 in self.second:
                 if subject1.weeks_interval == subject2.weeks_interval:
-                    if flags & FLAG_SAME_START_TIME:
+                    if flags & Flag.SAME_BUILDING:
+                        if not Diff.has_same_building(subject1, subject2):
+                            continue
+
+                    if flags & Flag.SAME_START_TIME:
                         if not Diff.has_same_start_time(subject1, subject2):
                             continue
 
-                    if flags & FLAG_SAME_END_TIME:
+                    if flags & Flag.SAME_END_TIME:
                         if not Diff.has_same_end_time(subject1, subject2):
                             continue
 
-                    if flags & FLAG_SAME_FLOOR:
+                    if flags & Flag.SAME_FLOOR:
                         if not Diff.has_same_floor_auditorium(subject1, subject2):
                             continue
 
-                    if flags & FLAG_NEAR_FLOOR:
+                    if flags & Flag.NEAR_FLOOR:
                         if not Diff.has_same_floor_auditorium(subject1, subject2):
                             continue
 
                     matching.append((subject1, subject2))
 
         return matching
+
+    @staticmethod
+    def has_same_building(subject1, subject2):
+        b1, b2 = building(subject1), building(subject2)
+        return b1 == b2 and b1 != Building.UKNOWN
 
     @staticmethod
     def has_same_start_time(subject1, subject2):
@@ -103,7 +84,7 @@ class Diff(object):
     def has_same_floor_auditorium(subject1, subject2) -> bool:
         if not (subject1.auditorium and subject2.auditorium):
             return False
-        if subject1.auditorium[0] == subject2.auditorium[0]:
+        if digits(subject1.auditorium)[0] == digits(subject2.auditorium)[0]:
             return True
         return False
 
@@ -111,6 +92,10 @@ class Diff(object):
     def has_near_floor_auditorium(subject1, subject2) -> bool:
         if not (subject1.auditorium and subject2.auditorium):
             return False
-        if abs(int(subject1.auditorium[0]) - int(subject2.auditorium[0])) <= 1:
+        if abs(int(digits(subject1.auditorium)[0]) - int(digits(subject2.auditorium)[0])) <= 1:
             return True
         return False
+
+
+def digits(s: str) -> str:
+    return re.sub("\D", "", s)
