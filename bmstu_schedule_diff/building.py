@@ -35,6 +35,8 @@ class Building(Enum):
 
 def building(subject: Subject) -> Building:
     auditorium = subject.auditorium.lower()
+    if auditorium.isdigit():
+        return Building.MAIN_NORTH
     if auditorium[-1:] == 'л':
         return Building.ULK
     if auditorium[-1:] == 'м':
