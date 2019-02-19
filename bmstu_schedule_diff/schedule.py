@@ -18,7 +18,7 @@ from typing import Dict, List, Tuple
 
 from bmstu_schedule import Subject, Lesson
 
-from bmstu_schedule_diff import Diff
+from .diff import Diff
 
 
 class Schedule(object):

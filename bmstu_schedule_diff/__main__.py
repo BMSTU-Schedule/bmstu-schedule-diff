@@ -17,10 +17,10 @@
 import argparse
 import re
 
-from .diff import Flag
-from .schedule import weekday_schedule
+from .flag import Flag
 from .parser import get_schedule
 from .patch import patch_bmstu_schedule
+from .schedule import weekday_schedule
 
 weekday_mapping = {
     0: 'Monday',
