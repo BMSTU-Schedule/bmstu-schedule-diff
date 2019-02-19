@@ -16,11 +16,44 @@
 
 import argparse
 import re
+from typing import Tuple, List, Dict
+
+from bmstu_schedule import Subject, Lesson
 
 from .flag import Flag
 from .parser import get_schedule
 from .patch import patch_bmstu_schedule
 from .schedule import weekday_schedule
+
+
+def main():
+    patch_bmstu_schedule()
+    args = vars(argparser().parse_args())
+    groups = set(map(lambda group: group.upper(), args['groups']))
+    if len(groups) != 2:
+        print("Please specify two different groups.")
+        return
+
+    schedules: Dict[str, List[Lesson]] = {}
+    for group in groups:
+        print(f"Downloading {group} schedule...")
+        schedule = get_schedule(group)
+        if not schedule:
+            print(f"Failed to download schedule for {group}")
+            return
+
+        schedules[group] = schedule
+
+    schedules_for_diff = [weekday_schedule(group, schedules[group]) for group in schedules.keys()]
+    flags = Flag.SAME_BUILDING | Flag.SAME_START_TIME | Flag.NEARBY_FLOOR
+    print("Looking for lessons on nearby floors...\n")
+
+    schedule1 = schedules_for_diff[0]
+    schedule2 = schedules_for_diff[1]
+    diff = schedule1.diff(schedule2, flags)
+
+    print_results(diff)
+
 
 weekday_mapping = {
     0: 'Monday',
@@ -32,45 +65,16 @@ weekday_mapping = {
 }
 
 
-def main():
-    patch_bmstu_schedule()
-    args = vars(argparser().parse_args())
-    groups = set(map(lambda group: group.upper(), args['groups']))
-    if len(groups) != 2:
-        print("Please specify two different groups.")
-        return
-
-    lessons_per_group = {}
-    for group in groups:
-        print(f"Downloading {group} schedule...")
-        lessons = get_schedule(group)
-
-        if not lessons:
-            print(f"Failed to download schedule for {group}")
-            return
-
-        lessons_per_group[group] = lessons
-
-    schedules_for_diff = []
-    for group in lessons_per_group.keys():
-        schedules_for_diff.append(weekday_schedule(group, lessons_per_group[group]))
-
-    flags = Flag.SAME_BUILDING | Flag.SAME_START_TIME | Flag.NEARBY_FLOOR
-    print("Looking for lessons on nearby floors...\n")
-
-    initial = schedules_for_diff[0]
-    for schedule in schedules_for_diff[1:]:
-        initial = initial.diff(schedule, flags)
-
-    if all(not initial[key] for key in initial.keys()):
+def print_results(results: Dict[int, List[Tuple[Subject, Subject]]]):
+    if all(not results[key] for key in results.keys()):
         print("Nothing found.")
         return
 
-    for weekday in initial.keys():
-        if not initial[weekday]:
+    for weekday in results.keys():
+        if not results[weekday]:
             continue
         print(f"{weekday_mapping[weekday]}:")
-        for pair in initial[weekday]:
+        for pair in results[weekday]:
             print(f"({pretty_print_subject(pair[0])}, {pretty_print_subject(pair[1])})")
         print()
 
