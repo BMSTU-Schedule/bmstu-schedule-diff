@@ -20,6 +20,9 @@ from bmstu_schedule import Subject, Lesson
 
 from .diff import Diff
 
+WEEK_START = 0
+WEEK_END = 5
+
 
 class Schedule(object):
 
@@ -30,7 +33,7 @@ class Schedule(object):
     def diff(self, schedule, flags: int) -> Dict[int, List[Tuple[Subject, Subject]]]:
         weekdays = {}
 
-        for weekday in range(0, 6):
+        for weekday in range(WEEK_START, WEEK_END + 1):
             first = self.subjects_by_weekday[weekday]
             second = schedule.subjects_by_weekday[weekday]
             diff = Diff(first, second)
@@ -41,17 +44,14 @@ class Schedule(object):
 
 
 def weekday_schedule(group: str, lessons: List[Lesson]) -> Schedule:
-    filtered = {}
-    for i in range(0, 6):
-        filtered[i] = []
-
+    subjects_by_weekday = {k: [] for k in range(WEEK_START, WEEK_END + 1)}
     for lesson in lessons:
         subjects = lesson.subjects
         for subject in subjects:
             subject.start_time = lesson.start_time
             subject.end_time = lesson.end_time
-        for i in range(0, 6):
-            n = filter(lambda x: x.subject_day_index == i, subjects)
-            filtered[i].extend(n)
 
-    return Schedule(group, filtered)
+        for weekday in range(WEEK_START, WEEK_END + 1):
+            subjects_by_weekday[weekday].extend(filter(lambda subject: subject.subject_day_index == weekday, subjects))
+
+    return Schedule(group, subjects_by_weekday)
