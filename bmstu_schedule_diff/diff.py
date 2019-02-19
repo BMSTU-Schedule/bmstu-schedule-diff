@@ -29,15 +29,11 @@ class Diff(object):
 
     def diff(self, flags: int) -> List[Tuple[Subject, Subject]]:
         matching = []
+        filters = list(get_filters(flags))
         for subject1 in self.first:
             for subject2 in self.second:
                 if subject1.weeks_interval == subject2.weeks_interval:
-                    matches = True
-                    for filter in get_filters(flags):
-                        if not filter.matches(subject1, subject2):
-                            matches = False
-
-                    if matches:
+                    if all(filter.matches(subject1, subject2) for filter in filters):
                         matching.append((subject1, subject2))
 
         return matching
