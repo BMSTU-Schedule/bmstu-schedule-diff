@@ -45,8 +45,8 @@ def main():
         schedules[group] = schedule
 
     schedules_for_diff = [weekday_schedule(group, schedules[group]) for group in schedules.keys()]
-    flags = Flag.SAME_BUILDING | Flag.SAME_START_TIME | Flag.NEARBY_FLOOR
-    print("Looking for lessons on nearby floors...\n")
+    flags = Flag.SAME_BUILDING | Flag.NEARLY_SAME_TIME | Flag.NEARBY_FLOOR
+    print("Looking for close lessons...\n")
 
     schedule1 = schedules_for_diff[0]
     schedule2 = schedules_for_diff[1]
