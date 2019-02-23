@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from datetime import datetime, timedelta
 from typing import Iterator
 
 from .auditorium import valid_auditorium, floors_difference, digits
@@ -37,6 +38,12 @@ def get_filters(flags: int) -> Iterator[object]:
 
     if flags & Flag.NEARBY_FLOOR:
         yield NearbyFloorFilter()
+
+    if flags & Flag.NEARLY_SAME_TIME:
+        yield NearlySameTimeFilter()
+
+    if flags & Flag.SAME_AUDITORIUM:
+        yield SameAuditoriumFilter()
 
 
 class SameBuildingFilter(object):
@@ -93,3 +100,33 @@ class NearbyFloorFilter(object):
         if floors_difference(digits(subject1.auditorium), digits(subject2.auditorium)) <= 1:
             return True
         return False
+
+
+class SameAuditoriumFilter(object):
+
+    def __init__(self):
+        pass
+
+    def matches(self, subject1, subject2) -> bool:
+        if not (valid_auditorium(subject1.auditorium) and valid_auditorium(subject2.auditorium)):
+            return False
+        if subject1.auditorium == subject2.auditorium:
+            return True
+        return False
+
+
+class NearlySameTimeFilter(object):
+
+    def __init__(self):
+        pass
+
+    def matches(self, subject1, subject2) -> bool:
+        if not (valid_auditorium(subject1.auditorium) and valid_auditorium(subject2.auditorium)):
+            return False
+        if self.get_time(subject2.start_time) - self.get_time(subject1.end_time) < timedelta(minutes=30):
+            return True
+        return False
+
+    @staticmethod
+    def get_time(time):
+        return datetime.strptime(time, '%H%M%S')

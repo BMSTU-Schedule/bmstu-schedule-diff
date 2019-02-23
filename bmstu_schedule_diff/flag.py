@@ -19,9 +19,11 @@ from enum import IntFlag, unique
 
 @unique
 class Flag(IntFlag):
-    SAME_BUILDING = 1 << 1
-    SAME_BUILDING_SIDE = 1 << 2
-    SAME_START_TIME = 1 << 3
-    SAME_END_TIME = 1 << 4
-    SAME_FLOOR = 1 << 5
-    NEARBY_FLOOR = 1 << 6
+    SAME_BUILDING = 1 << 0
+    SAME_BUILDING_SIDE = 1 << 1
+    SAME_START_TIME = 1 << 2
+    SAME_END_TIME = 1 << 3
+    SAME_FLOOR = 1 << 4
+    NEARBY_FLOOR = 1 << 5
+    NEARLY_SAME_TIME = 1 << 6
+    SAME_AUDITORIUM = 1 << 7
