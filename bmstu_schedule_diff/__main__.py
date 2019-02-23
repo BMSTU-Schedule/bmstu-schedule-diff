@@ -18,6 +18,7 @@ import argparse
 import re
 from typing import Tuple, List, Dict
 
+import requests
 from bmstu_schedule import Subject, Lesson
 
 from .flag import Flag
@@ -37,9 +38,10 @@ def main():
     schedules: Dict[str, List[Lesson]] = {}
     for group in groups:
         print(f"Downloading {group} schedule...")
-        schedule = get_schedule(group)
-        if not schedule:
-            print(f"Failed to download schedule for {group}")
+        try:
+            schedule = get_schedule(group)
+        except requests.exceptions.ConnectionError:
+            print(f"Failed to download {group} schedule: network is unreachable.")
             return
 
         schedules[group] = schedule
