@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from datetime import datetime, timedelta
+import re
 from typing import Iterator
 
 from .auditorium import valid_auditorium, floors_difference, digits
@@ -123,10 +123,24 @@ class NearlySameTimeFilter(object):
     def matches(self, subject1, subject2) -> bool:
         if not (valid_auditorium(subject1.auditorium) and valid_auditorium(subject2.auditorium)):
             return False
-        if self.get_time(subject2.start_time) - self.get_time(subject1.end_time) < timedelta(minutes=30):
+        max_interval = 30
+        if self.difference(subject1.start_time, subject2.start_time) < max_interval:
+            return True
+        if self.difference(subject1.end_time, subject2.end_time) < max_interval:
+            return True
+        if self.difference(subject1.end_time, subject2.start_time) < max_interval:
+            return True
+        if self.difference(subject2.end_time, subject1.start_time) < max_interval:
             return True
         return False
 
+    def difference(self, t1, t2):
+        t1_time = self.get_time(t1)
+        t2_time = self.get_time(t2)
+        return abs(t2_time - t1_time)
+
     @staticmethod
     def get_time(time):
-        return datetime.strptime(time, '%H%M%S')
+        time_arr = re.findall('..', time)[:-1]
+        h, m = int(time_arr[0]), int(time_arr[1])
+        return h * 60 + m
