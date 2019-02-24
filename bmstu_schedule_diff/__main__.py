@@ -47,7 +47,7 @@ def main():
         schedules[group] = schedule
 
     schedules_for_diff = [weekday_schedule(group, schedules[group]) for group in schedules.keys()]
-    flags = Flag.SAME_BUILDING | Flag.NEARLY_SAME_TIME | Flag.NEARBY_FLOOR
+    flags = Flag.SAME_BUILDING | Flag.NEARBY_FLOOR | Flag.NEARLY_SAME_TIME
     print("Looking for close lessons...\n")
 
     schedule1 = schedules_for_diff[0]
@@ -77,8 +77,14 @@ def print_results(results: Dict[int, List[Tuple[Subject, Subject]]]):
             continue
         print(f"{weekday_mapping[weekday]}:")
         for pair in results[weekday]:
-            print(f"({pretty_print_subject(pair[0])}, {pretty_print_subject(pair[1])})")
+            print(f"{weeks_interval(pair[0].weeks_interval)} ({pretty_print_subject(pair[0])}, {pretty_print_subject(pair[1])})")
         print()
+
+
+def weeks_interval(weeks_interval):
+    if weeks_interval == 1:
+        return "ЧС"
+    return "ЗН"
 
 
 def pretty_print_subject(subject):
