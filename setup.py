@@ -16,7 +16,8 @@ setup(
     ],
     packages=['bmstu_schedule_diff'],
     install_requires=[
-        'bmstu_schedule'
+        'bmstu_schedule',
+        'colorama'
     ],
     entry_points={
         'console_scripts': [
