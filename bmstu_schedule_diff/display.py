@@ -92,7 +92,7 @@ def pretty_print_subject(subject):
 
 
 def color_subject(subject: str):
-    return f"{colorama.Back.LIGHTCYAN_EX} {subject} {colorama.Back.RESET}"
+    return f"{Fore.BLACK + colorama.Back.LIGHTCYAN_EX} {subject} {colorama.Fore.RESET + colorama.Back.RESET}"
 
 
 def weeks_interval(weeks_interval):
