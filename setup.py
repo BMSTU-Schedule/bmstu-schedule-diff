@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='bmstu-schedule-diff',
-    version='1.2.0',
+    version='1.2.1',
     author='Nikola Trubitsyn',
     author_email='nikola.trubitsyn@gmail.com',
     url='https://github.com/trubitsyn/bmstu-schedule-diff',
