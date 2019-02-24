@@ -57,14 +57,14 @@ def main():
     print_results(diff)
 
 
-weekday_mapping = {
-    0: 'Monday',
-    1: 'Tuesday',
-    2: 'Wednesday',
-    3: 'Thursday',
-    4: 'Friday',
-    5: 'Saturday'
-}
+WEEKDAYS = (
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday'
+)
 
 
 def print_results(results: Dict[int, List[Tuple[Subject, Subject]]]):
@@ -75,7 +75,7 @@ def print_results(results: Dict[int, List[Tuple[Subject, Subject]]]):
     for weekday in results.keys():
         if not results[weekday]:
             continue
-        print(f"{weekday_mapping[weekday]}:")
+        print(f"{WEEKDAYS[weekday]}:")
         for pair in results[weekday]:
             print(f"{weeks_interval(pair[0].weeks_interval)} ({pretty_print_subject(pair[0])}, {pretty_print_subject(pair[1])})")
         print()
