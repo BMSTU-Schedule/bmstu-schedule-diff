@@ -31,7 +31,7 @@ def main():
     display = Display()
     patch_bmstu_schedule()
     args = vars(argparser().parse_args())
-    groups = set(map(lambda group: group.upper(), args['groups']))
+    groups = sorted(set(map(lambda group: group.upper(), args['groups'])))
     if len(groups) != 2:
         display.notify_invalid_args()
         return
