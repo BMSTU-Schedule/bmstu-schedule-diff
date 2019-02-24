@@ -66,7 +66,8 @@ class Display(object):
                 if len(subject2) > max_length_2:
                     max_length_2 = len(subject2)
 
-        print(group1.center(max_length_1), group2.center(max_length_2))
+        print(f"{Style.BRIGHT}{' ' * 5}{group1.center(max_length_1)}{Style.RESET_ALL}",
+              f"{Style.BRIGHT} {group2.center(max_length_2)}{Style.RESET_ALL}")
 
         for weekday in results.keys():
             if not results[weekday]:
@@ -77,7 +78,8 @@ class Display(object):
                 interval = weeks_interval(pair[0].weeks_interval)
                 subject1 = pretty_print_subject(pair[0])
                 subject2 = pretty_print_subject(pair[1])
-                print(interval, color_subject(subject1.ljust(max_length_1)), color_subject(subject2.ljust(max_length_2)))
+                print(interval, color_subject(subject1.ljust(max_length_1)),
+                      color_subject(subject2.ljust(max_length_2)))
 
         print()
 
