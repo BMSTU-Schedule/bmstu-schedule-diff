@@ -18,7 +18,7 @@ import re
 from typing import Iterator
 
 from .auditorium import valid_auditorium, floors_difference, digits
-from .building import building, Building
+from .building import Building, building_by_auditorium
 from .flag import Flag
 
 
@@ -52,9 +52,12 @@ class SameBuildingFilter(object):
         self.differentiate_main_sides = differentiate_main_sides
 
     def matches(self, subject1, subject2) -> bool:
-        if not (valid_auditorium(subject1.auditorium) and valid_auditorium(subject2.auditorium)):
+        auditorium1 = subject1.auditorium
+        auditorium2 = subject2.auditorium
+        if not (valid_auditorium(auditorium1) and valid_auditorium(auditorium2)):
             return False
-        b1, b2 = building(subject1, self.differentiate_main_sides), building(subject2, self.differentiate_main_sides)
+        b1 = building_by_auditorium(auditorium1, self.differentiate_main_sides)
+        b2 = building_by_auditorium(auditorium2, self.differentiate_main_sides)
         return b1 == b2 and b1 != Building.UNKNOWN
 
 

@@ -38,4 +38,8 @@ def digits(auditorium: str) -> str:
 
 
 def floors_difference(aud1: str, aud2: str) -> int:
-    return abs((int(aud1) // 100) - (int(aud2) // 100))
+    return abs(auditorium_floor(aud1) - auditorium_floor(aud2))
+
+
+def auditorium_floor(auditorium: str):
+    return int(auditorium) // 100

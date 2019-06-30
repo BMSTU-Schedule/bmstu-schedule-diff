@@ -33,11 +33,11 @@ class Building(Enum):
     UNKNOWN = auto()
 
 
-def building(subject: Subject, differentiate_main_sides: bool) -> Building:
-    if not subject.auditorium:
+def building_by_auditorium(auditorium: str, differentiate_main_sides: bool) -> Building:
+    if not auditorium:
         return Building.UNKNOWN
 
-    auditorium = subject.auditorium.lower()
+    auditorium = auditorium.lower()
     if auditorium.isdigit():
         if differentiate_main_sides:
             return Building.MAIN_NORTH
